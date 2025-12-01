@@ -1,12 +1,11 @@
 # keybob2
 
-![keybob2](imgur.com image replace me!)
 
-*A short description of the keyboard/project*
+A personal keybob to practice designing a PCB
 
 * Keyboard Maintainer: [Bob Blinde](https://github.com/BobBlinde)
-* Hardware Supported: *The PCBs, controllers supported*
-* Hardware Availability: *Links to where you can find this hardware*
+* Hardware Supported: RP2040 USB-C
+* Hardware Availability: AliExpress
 
 Make example for this keyboard (after setting up your build environment):
 
