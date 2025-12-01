@@ -26,20 +26,23 @@ extern "C" {
 #endif
 
 extern report_keyboard_t *keyboard_report;
+#ifdef NKRO_ENABLE
+extern report_nkro_t *nkro_report;
+#endif
 
 void send_keyboard_report(void);
 
 /* key */
 inline void add_key(uint8_t key) {
-    add_key_to_report(keyboard_report, key);
+    add_key_to_report(key);
 }
 
 inline void del_key(uint8_t key) {
-    del_key_from_report(keyboard_report, key);
+    del_key_from_report(key);
 }
 
 inline void clear_keys(void) {
-    clear_keys_from_report(keyboard_report);
+    clear_keys_from_report();
 }
 
 /* modifier */
@@ -111,8 +114,7 @@ void clear_oneshot_swaphands(void);
 void neutralize_flashing_modifiers(uint8_t active_mods);
 #endif
 #ifndef MODS_TO_NEUTRALIZE
-#    define MODS_TO_NEUTRALIZE \
-        { MOD_BIT(KC_LEFT_ALT), MOD_BIT(KC_LEFT_GUI) }
+#    define MODS_TO_NEUTRALIZE {MOD_BIT(KC_LEFT_ALT), MOD_BIT(KC_LEFT_GUI)}
 #endif
 
 #ifdef __cplusplus
