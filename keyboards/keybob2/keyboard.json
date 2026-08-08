@@ -12,7 +12,12 @@
     },
     "matrix_pins": {
         "cols": ["GP20", "GP19", "GP18", "GP17", "GP16", "GP10", "GP11", "GP12", "GP13", "GP14", "GP15", "GP23", "GP29", "GP28", "GP27", "GP26", "GP22"],
-        "rows": ["GP4", "GP5", "GP6", "GP21", "GP8", "GP7"] // Connected GP9 and GP21 since GP9 isn't working
+        // Row 3 was originally "GP9" (see below); GP9 stopped registering key presses,
+        // so row 3 was rewired to GP21 instead. A single row array only supports one
+        // pin per row, so GP9 and GP21 can't both drive row 3 at the same time without
+        // custom matrix code — keeping the old value here for reference/rollback.
+        // "rows": ["GP4", "GP5", "GP6", "GP9", "GP8", "GP7"]
+        "rows": ["GP4", "GP5", "GP6", "GP21", "GP8", "GP7"]
     },
     "url": "https://github.com/BobBlinde",
     "usb": {
