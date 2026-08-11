@@ -4,3 +4,4 @@
 #define I2C1_SDA_PIN GP0
 #define I2C1_SCL_PIN GP1
 #define I2C1_CLOCK_SPEED 400000
+#define OLED_FONT_H "keybobfont.c"

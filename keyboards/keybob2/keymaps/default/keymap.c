@@ -3,22 +3,81 @@
 
 #include QMK_KEYBOARD_H
 
+
+
+static void caps_lock(void) {
+
+    static const char PROGMEM latchoff[] ={
+        0X88, 0X89, 0X20, 0X20, 0X00
+    };
+    static const char PROGMEM latchon[] ={
+        0X88, 0X89, 0X8A, 0X8B, 0X00
+    };
+    static const char PROGMEM capsoff1[] ={
+        0X80, 0X81, 0X82, 0X83, 0X00
+    };
+    static const char PROGMEM capsoff2[] ={
+        0XA0, 0XA1, 0XA2, 0XA3, 0X00
+    };
+    static const char PROGMEM capsoff3[] ={
+        0XC0, 0XC1, 0XC2, 0XC3, 0X00
+    };
+    static const char PROGMEM capson1[] ={
+        0X84, 0X85, 0X86, 0X87, 0X00
+    };
+    static const char PROGMEM capson2[] ={
+        0XA4, 0XA5, 0XA6, 0XA7, 0X00
+    };
+    static const char PROGMEM capson3[] ={
+        0XC4, 0XC5, 0XC6, 0XC7, 0X00
+    };
+
+
+    led_t led_state = host_keyboard_led_state();
+
+
+
+    if (led_state.caps_lock) {
+        oled_set_cursor(0, 0);
+        oled_write_P(latchon, false);
+        oled_set_cursor(0,1);
+        oled_write_P(capson1, false);
+        oled_set_cursor(0,2);
+        oled_write_P(capson2, false);
+        oled_set_cursor(0,3);
+        oled_write_P(capson3, false);
+
+    } else {
+        oled_set_cursor(0,0);
+        oled_write_P(latchoff, false);
+        oled_set_cursor(0,1);
+        oled_write_P(capsoff1, false);
+        oled_set_cursor(0,2);
+        oled_write_P(capsoff2, false);
+        oled_set_cursor(0,3);
+        oled_write_P(capsoff3, false);
+    } 
+}
+
+
+
 #ifdef OLED_ENABLE
 bool oled_task_user(void) {
-    // Host Keyboard Layer Status
-    oled_set_cursor(0, 0);
-    led_t led_state = host_keyboard_led_state();
-    oled_write(led_state.caps_lock ? PSTR("Caps Lock On ") : PSTR("Caps Lock Off"), false);
-    oled_set_cursor(0, 1);
+    caps_lock();
+    oled_set_cursor(5, 1);
     switch (get_highest_layer(layer_state|default_layer_state)){
         case 0:
-            oled_write("default layer", false);
+            oled_write("Boot|Play", false);
+            oled_set_cursor(5,2);
+            oled_write("Volume", false);
+            oled_set_cursor(5,3);
+            oled_write("Deafen|Mute", false);
             break;
         case 1:
-            oled_write("First Layer", false);
+            oled_write("Volume", false);
             break;
         case 2:
-            oled_write("Second Layer", false);
+            oled_write("Deafen|Mute ", false);
     }
     return false;
 }
@@ -39,7 +98,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      *              │Esc│   │F1 │F2 │F3 │F4 │ │F5 │F6 │F7 │F8 │ │F9 │F10│F11│F12│ │PSc│Scr│Pse│
      *              └───┘   └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┘
      *              ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐ ┌───┬───┬───┐
-     *     ┌───────┐│ ` │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │ Backsp│ │Ins│Hom│PgU│
+     *     ┌───────┐│ ` │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │ Backsp│ │Ins│Hom│PgU│      
      *     │  oled │├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤ ├───┼───┼───┤
      *     └───────┘│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │ [ │ ] │  \  │ │Del│End│PgD│
      *     ┌───┬───┐├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤ └───┴───┴───┘
@@ -56,7 +115,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                             KC_GRV, KC_1,   KC_2,   KC_3,   KC_4,   KC_5,   KC_6,   KC_7,   KC_8,   KC_9,   KC_0,   KC_MINS,KC_EQL, KC_BSPC,    KC_INS, KC_HOME,KC_PGUP,
                             KC_TAB, KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,   KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,   KC_LBRC,KC_RBRC,KC_BSLS,    KC_DEL, KC_END, KC_PGDN,
         QK_BOOT,KC_MPLY,    KC_CAPS,KC_A,   KC_S,   KC_D,   KC_F,   KC_G,   KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,KC_QUOT,        KC_ENT,
-        KC_F13, KC_F14,     KC_LSFT,        KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   KC_N,   KC_M,   KC_COMM,KC_DOT, KC_SLSH,        KC_RSFT,            KC_UP,
+        KC_VOLD,KC_VOLU,    KC_LSFT,        KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   KC_N,   KC_M,   KC_COMM,KC_DOT, KC_SLSH,        KC_RSFT,            KC_UP,
         KC_F15, KC_F16,     KC_LCTL,KC_LGUI,KC_LALT,                        KC_SPC,                         KC_RALT, KC_RGUI,KC_APP,KC_RCTL,    KC_LEFT,KC_DOWN,KC_RGHT
     ),
     [1] = LAYOUT_tkl_macros(
@@ -73,7 +132,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                             _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,    _______,_______,_______,
                             _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,    _______,_______,_______,
-        _______,_______,    _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,        _______,
+        QK_BOOT,_______,    _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,        _______,
         _______,_______,    _______,        _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,        _______,            _______,
         _______,_______,    _______,_______,_______,                            _______,                    _______,_______,_______,_______,    _______,_______,_______
     )
