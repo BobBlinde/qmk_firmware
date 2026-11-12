@@ -62,29 +62,37 @@ static void caps_lock(void) {
 
 
 #ifdef OLED_ENABLE
+// Write the three layer label lines next to the caps lock icon.
+// oled_write_ln clears the rest of each line, so text from a previous
+// layer never lingers; pass "" for lines that should be blank.
+static void write_layer_lines(const char *line1, const char *line2, const char *line3) {
+    oled_set_cursor(5, 1);
+    oled_write_ln(line1, false);
+    oled_set_cursor(5, 2);
+    oled_write_ln(line2, false);
+    oled_set_cursor(5, 3);
+    oled_write_ln(line3, false);
+}
+
 bool oled_task_user(void) {
     caps_lock();
-    oled_set_cursor(5, 1);
     switch (get_highest_layer(layer_state|default_layer_state)){
         case 0:
-            oled_write("Boot|Play", false);
-            oled_set_cursor(5,2);
-            oled_write("Volume", false);
-            oled_set_cursor(5,3);
-            oled_write("Deafen|Mute", false);
+            write_layer_lines("Boot|Play", "Volume", "Deafen|Mute");
             break;
         case 1:
-            oled_write("Volume", false);
+            write_layer_lines("Volume", "", "");
             break;
         case 2:
-            oled_write("Deafen|Mute ", false);
+            write_layer_lines("Deafen|Mute", "", "");
+            break;
     }
     return false;
 }
 #endif
 
 const uint16_t PROGMEM default_layer_combo[] = {QK_BOOT, KC_MPLY, COMBO_END};
-const uint16_t PROGMEM first_layer_combo[] = {KC_F13, KC_F14, COMBO_END};
+const uint16_t PROGMEM first_layer_combo[] = {KC_VOLD, KC_VOLU, COMBO_END};
 const uint16_t PROGMEM second_layer_combo[] = {KC_F15, KC_F16, COMBO_END};
 combo_t key_combos[] = {
     COMBO(default_layer_combo, DF(0)),
